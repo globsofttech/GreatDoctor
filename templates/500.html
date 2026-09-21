@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>500 - Server Error</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #ff6b6b 0%, #ee5a6f 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        .container {
+            text-align: center;
+            color: white;
+            background: rgba(0,0,0,0.2);
+            padding: 40px;
+            border-radius: 10px;
+        }
+        h1 {
+            font-size: 100px;
+            font-weight: bold;
+            margin-bottom: 20px;
+        }
+        p {
+            font-size: 16px;
+            margin-bottom: 10px;
+            opacity: 0.9;
+        }
+        .error {
+            background: rgba(255,255,255,0.2);
+            padding: 15px;
+            border-radius: 5px;
+            margin: 20px 0;
+            font-family: monospace;
+            font-size: 12px;
+            text-align: left;
+            max-width: 500px;
+        }
+        a {
+            display: inline-block;
+            background: white;
+            color: #ee5a6f;
+            padding: 12px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: transform 0.2s;
+            margin-top: 20px;
+        }
+        a:hover {
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>500</h1>
+        <p>Server Error</p>
+        {% if error %}
+            <div class="error">{{ error }}</div>
+        {% endif %}
+        <p>Something went wrong. Please try again later.</p>
+        <a href="/dashboard">← Back to Dashboard</a>
+    </div>
+</body>
+</html>

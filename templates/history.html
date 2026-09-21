@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>History</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 650px; margin: 40px auto; padding: 0 20px; color: #222; }
+        nav a { margin-right: 16px; font-size: 14px; }
+        .row { border-bottom: 1px solid #eee; padding: 12px 0; }
+        .category { color: #888; font-size: 13px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/">Today</a>
+        <a href="/history">History</a>
+        <a href="/send-now">Send Now</a>
+    </nav>
+    <h1>Covered so far ({{ entries|length }})</h1>
+    {% for e in entries %}
+    <div class="row">
+        <b>{{ e.name }}</b> <span class="category">— {{ e.category }} — {{ e.date }}</span>
+        {% if e.video_url %}<br><a href="{{ e.video_url }}">{{ e.video_title }}</a>{% endif %}
+    </div>
+    {% else %}
+    <p>Nothing sent yet.</p>
+    {% endfor %}
+</body>
+</html>

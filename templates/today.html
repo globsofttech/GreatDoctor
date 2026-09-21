@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Today's Disease</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 650px; margin: 40px auto; padding: 0 20px; color: #222; }
+        h1 { font-size: 22px; }
+        .category { color: #888; margin-top: -10px; }
+        img { max-width: 100%; border-radius: 10px; margin: 16px 0; }
+        a { color: #1a56db; }
+        .card { border: 1px solid #eee; border-radius: 12px; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
+        nav a { margin-right: 16px; font-size: 14px; }
+    </style>
+</head>
+<body>
+    <nav>
+        <a href="/">Today</a>
+        <a href="/history">History</a>
+        <a href="/send-now">Send Now</a>
+    </nav>
+    <div class="card">
+        <h1>🩺 {{ entry.name }}</h1>
+        <p class="category">{{ entry.category }} &middot; {{ entry.date }}</p>
+        {% if entry.image_url %}<img src="{{ entry.image_url }}">{% endif %}
+        <p>{{ entry.summary or "No summary available today." }}</p>
+        {% if entry.video_url %}<p>🎥 <a href="{{ entry.video_url }}">{{ entry.video_title }}</a></p>{% endif %}
+        {% if entry.wiki_url %}<p><a href="{{ entry.wiki_url }}">Read more on Wikipedia →</a></p>{% endif %}
+    </div>
+</body>
+</html>

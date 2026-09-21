@@ -1,0 +1,332 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ lesson.name }} - Medical Portal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .navbar a {
+            color: white;
+            text-decoration: none;
+            margin-left: 20px;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        .back-link {
+            display: inline-block;
+            color: #667eea;
+            text-decoration: none;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        .back-link:hover {
+            text-decoration: underline;
+        }
+        .header {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .category-badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 6px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            margin-bottom: 15px;
+        }
+        .lesson-title {
+            font-size: 32px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        .lesson-meta {
+            display: flex;
+            gap: 20px;
+            color: #999;
+            font-size: 14px;
+            margin-bottom: 20px;
+        }
+        .meta-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        .status-badges {
+            display: flex;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 6px 12px;
+            border-radius: 4px;
+            background: #f0f0f0;
+            font-size: 13px;
+        }
+        .badge.read {
+            background: #e6f7e6;
+            color: #2d7a2d;
+        }
+        .content {
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            margin-bottom: 30px;
+        }
+        .section {
+            margin-bottom: 30px;
+        }
+        .section:last-child {
+            margin-bottom: 0;
+        }
+        .section-title {
+            font-size: 20px;
+            font-weight: 600;
+            color: #667eea;
+            margin-bottom: 15px;
+            padding-bottom: 10px;
+            border-bottom: 2px solid #667eea;
+        }
+        .section-content {
+            font-size: 15px;
+            line-height: 1.8;
+            color: #555;
+        }
+        .list-item {
+            margin-bottom: 10px;
+            padding-left: 20px;
+            position: relative;
+        }
+        .list-item::before {
+            content: "•";
+            position: absolute;
+            left: 0;
+            color: #667eea;
+            font-weight: bold;
+        }
+        .video-section {
+            background: #f5f7fa;
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+        }
+        .video-link {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 12px 30px;
+            border-radius: 5px;
+            text-decoration: none;
+            font-weight: 600;
+            transition: background 0.3s;
+            margin-top: 10px;
+        }
+        .video-link:hover {
+            background: #5568d3;
+        }
+        .actions {
+            display: flex;
+            gap: 10px;
+            margin-top: 30px;
+            flex-wrap: wrap;
+        }
+        .btn {
+            padding: 12px 25px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 600;
+            transition: background 0.3s;
+        }
+        .btn-primary {
+            background: #667eea;
+            color: white;
+        }
+        .btn-primary:hover {
+            background: #5568d3;
+        }
+        .btn-secondary {
+            background: #4ecdc4;
+            color: white;
+        }
+        .btn-secondary:hover {
+            background: #45b7aa;
+        }
+        .btn-danger {
+            background: #ff6b6b;
+            color: white;
+        }
+        .btn-danger:hover {
+            background: #ff5252;
+        }
+        .print-area {
+            font-size: 14px;
+            line-height: 1.8;
+        }
+        @media (max-width: 768px) {
+            .lesson-title {
+                font-size: 24px;
+            }
+            .actions {
+                flex-direction: column;
+            }
+            .btn {
+                width: 100%;
+            }
+            .lesson-meta {
+                flex-direction: column;
+                gap: 5px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>🏥 Medical Portal</h1>
+        <div>
+            <a href="/dashboard">← Back to Dashboard</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <a href="/dashboard" class="back-link">← Back to All Lessons</a>
+
+        <div class="header">
+            <div class="category-badge">{{ lesson.category }}</div>
+            <h1 class="lesson-title">{{ lesson.name }}</h1>
+            
+            <div class="lesson-meta">
+                <div class="meta-item">📅 {{ status.sent_at.strftime('%B %d, %Y') }}</div>
+                <div class="meta-item">🕐 {{ status.sent_at.strftime('%I:%M %p') }}</div>
+                {% if status.read_at %}
+                    <div class="meta-item">✓ Read on {{ status.read_at.strftime('%B %d, %Y') }}</div>
+                {% endif %}
+            </div>
+
+            <div class="status-badges">
+                {% if status.read %}
+                    <div class="badge read">✓ Read</div>
+                {% else %}
+                    <div class="badge">Unread</div>
+                {% endif %}
+                <div class="badge">{{ lesson.category }}</div>
+            </div>
+        </div>
+
+        <div class="content print-area">
+            {% if lesson.wiki_info and lesson.wiki_info.summary %}
+                <div class="section">
+                    <div class="section-title">📚 Overview</div>
+                    <div class="section-content">{{ lesson.wiki_info.summary }}</div>
+                </div>
+            {% endif %}
+
+            {% if lesson.video_info and lesson.video_info.title %}
+                <div class="section">
+                    <div class="section-title">🎬 Educational Video</div>
+                    <div class="video-section">
+                        <p><strong>{{ lesson.video_info.title }}</strong></p>
+                        {% if lesson.video_info.url %}
+                            <a href="{{ lesson.video_info.url }}" target="_blank" class="video-link">
+                                Watch on YouTube →
+                            </a>
+                        {% endif %}
+                    </div>
+                </div>
+            {% endif %}
+
+            <div class="section">
+                <div class="section-title">💡 Key Learning Points</div>
+                <div class="section-content">
+                    <div class="list-item">Understand the pathophysiology and epidemiology</div>
+                    <div class="list-item">Learn diagnostic criteria and investigations</div>
+                    <div class="list-item">Master treatment protocols and drug management</div>
+                    <div class="list-item">Identify warning signs and complications</div>
+                    <div class="list-item">Know about adverse drug reactions (ADRs)</div>
+                </div>
+            </div>
+
+            <div class="section">
+                <div class="section-title">📝 How to Use This</div>
+                <div class="section-content">
+                    <p>This lesson covers comprehensive information about <strong>{{ lesson.name }}</strong>. 
+                    Study the overview, watch the educational video, and review the key points. 
+                    This will be repeated after 150 days to reinforce your learning.</p>
+                    <p style="margin-top: 10px;">After going through this material, mark it as read and explore the next lesson in your dashboard.</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="actions">
+            <button class="btn btn-primary" onclick="markAsRead()">✓ Mark as Read</button>
+            <button class="btn btn-secondary" onclick="resendEmail()">📤 Send to Email</button>
+            <button class="btn btn-danger" onclick="deleteLesson()">🗑️ Move to Trash</button>
+            <button class="btn btn-secondary" onclick="window.print()">🖨️ Print</button>
+        </div>
+    </div>
+
+    <script>
+        async function markAsRead() {
+            try {
+                await fetch(`/api/mark-as-read/{{ status._id }}`, { method: 'POST' });
+                alert('✓ Marked as read!');
+                location.reload();
+            } catch (error) {
+                alert('Error: ' + error);
+            }
+        }
+
+        async function resendEmail() {
+            try {
+                const res = await fetch(`/api/resend/{{ status._id }}`, { method: 'POST' });
+                if (res.ok) {
+                    alert('✓ Email sent to your inbox!');
+                } else {
+                    alert('Error sending email');
+                }
+            } catch (error) {
+                alert('Error: ' + error);
+            }
+        }
+
+        function deleteLesson() {
+            if (!confirm('Move to recycle bin?')) return;
+            fetch(`/api/delete/{{ status._id }}`, { method: 'POST' })
+                .then(() => {
+                    alert('Moved to recycle bin');
+                    location.href = '/dashboard';
+                })
+                .catch(e => alert('Error: ' + e));
+        }
+    </script>
+</body>
+</html>

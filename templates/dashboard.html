@@ -1,0 +1,505 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - Medical Knowledge Portal</title>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f5f7fa;
+            color: #333;
+        }
+        .navbar {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        .navbar h1 {
+            font-size: 22px;
+        }
+        .navbar-menu {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        .navbar a, .navbar button {
+            color: white;
+            text-decoration: none;
+            cursor: pointer;
+            background: none;
+            border: none;
+            font-size: 14px;
+            transition: opacity 0.3s;
+        }
+        .navbar a:hover, .navbar button:hover {
+            opacity: 0.8;
+        }
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+        .header-section {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+        .stats {
+            display: flex;
+            gap: 20px;
+        }
+        .stat-card {
+            background: white;
+            padding: 15px 25px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            text-align: center;
+            min-width: 150px;
+        }
+        .stat-card .number {
+            font-size: 32px;
+            font-weight: bold;
+            color: #667eea;
+        }
+        .stat-card .label {
+            font-size: 12px;
+            color: #999;
+            margin-top: 5px;
+            text-transform: uppercase;
+        }
+        .actions {
+            display: flex;
+            gap: 10px;
+        }
+        .btn {
+            padding: 10px 20px;
+            background: #667eea;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: background 0.3s;
+        }
+        .btn:hover {
+            background: #5568d3;
+        }
+        .btn-secondary {
+            background: #ddd;
+            color: #333;
+        }
+        .btn-secondary:hover {
+            background: #ccc;
+        }
+        .btn-danger {
+            background: #ff6b6b;
+        }
+        .btn-danger:hover {
+            background: #ff5252;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+        .search-box {
+            flex: 1;
+            min-width: 200px;
+        }
+        .search-box input {
+            width: 100%;
+            padding: 10px 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 14px;
+        }
+        .lessons-grid {
+            display: grid;
+            gap: 20px;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        }
+        .lesson-card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+            overflow: hidden;
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+        .lesson-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 20px rgba(0,0,0,0.15);
+        }
+        .lesson-card.unread {
+            border-left: 4px solid #667eea;
+        }
+        .lesson-card.read {
+            opacity: 0.8;
+        }
+        .lesson-header {
+            padding: 20px;
+            background: linear-gradient(135deg, #f5f7fa 0%, #e9ecef 100%);
+            border-bottom: 1px solid #e0e0e0;
+        }
+        .lesson-category {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            text-transform: uppercase;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+        .lesson-title {
+            font-size: 18px;
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 8px;
+        }
+        .lesson-date {
+            font-size: 12px;
+            color: #999;
+        }
+        .lesson-body {
+            padding: 20px;
+            min-height: 100px;
+        }
+        .lesson-summary {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.5;
+            margin-bottom: 15px;
+            max-height: 100px;
+            overflow: hidden;
+        }
+        .lesson-status {
+            display: flex;
+            gap: 5px;
+            margin-bottom: 15px;
+            font-size: 12px;
+        }
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 4px 10px;
+            border-radius: 4px;
+            background: #f0f0f0;
+        }
+        .status-badge.read {
+            background: #e6f7e6;
+            color: #2d7a2d;
+        }
+        .lesson-footer {
+            padding: 15px 20px;
+            border-top: 1px solid #e0e0e0;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .lesson-footer button {
+            flex: 1;
+            min-width: 80px;
+            padding: 8px 12px;
+            font-size: 12px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        .btn-view {
+            background: #667eea;
+            color: white;
+        }
+        .btn-view:hover {
+            background: #5568d3;
+        }
+        .btn-delete {
+            background: #ff6b6b;
+            color: white;
+        }
+        .btn-delete:hover {
+            background: #ff5252;
+        }
+        .btn-resend {
+            background: #4ecdc4;
+            color: white;
+        }
+        .btn-resend:hover {
+            background: #45b7aa;
+        }
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: #999;
+        }
+        .empty-state h2 {
+            margin-bottom: 10px;
+        }
+        .checkbox {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            margin-right: 10px;
+        }
+        .select-all-row {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 5px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        .tooltip {
+            position: relative;
+            display: inline-block;
+        }
+        .tooltip .tooltiptext {
+            visibility: hidden;
+            background-color: #333;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px 10px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -50px;
+            opacity: 0;
+            transition: opacity 0.3s;
+            font-size: 12px;
+            white-space: nowrap;
+        }
+        .tooltip:hover .tooltiptext {
+            visibility: visible;
+            opacity: 1;
+        }
+        @media (max-width: 768px) {
+            .header-section {
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
+            }
+            .navbar-menu {
+                flex-direction: column;
+                gap: 10px;
+            }
+            .lessons-grid {
+                grid-template-columns: 1fr;
+            }
+            .stats {
+                width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="navbar">
+        <h1>🏥 Medical Knowledge Portal</h1>
+        <div class="navbar-menu">
+            <a href="/dashboard">📚 All Lessons</a>
+            <a href="/recycle-bin">🗑️ Recycle Bin</a>
+            <a href="/settings">⚙️ Settings</a>
+            <a href="/logout">Logout</a>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="header-section">
+            <div>
+                <h2>📖 Learning Progress</h2>
+                <p style="color: #999; margin-top: 5px;">Track your medical knowledge journey</p>
+            </div>
+            <div class="actions">
+                <button class="btn" onclick="sendNow()">📤 Send Now</button>
+                <button class="btn btn-secondary" onclick="location.href='/settings'">⚙️ Settings</button>
+            </div>
+        </div>
+
+        <div class="stats">
+            <div class="stat-card">
+                <div class="number" id="total">0</div>
+                <div class="label">Total Lessons</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="read">0</div>
+                <div class="label">Read</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="unread">0</div>
+                <div class="label">Unread</div>
+            </div>
+            <div class="stat-card">
+                <div class="number" id="trash">0</div>
+                <div class="label">In Trash</div>
+            </div>
+        </div>
+
+        <div class="controls" style="margin-top: 30px;">
+            <div class="search-box">
+                <input type="text" id="searchInput" placeholder="🔍 Search lessons by name or category...">
+            </div>
+            <button class="btn" onclick="markAllRead()">✓ Mark All Read</button>
+        </div>
+
+        <div id="lessonsContainer"></div>
+    </div>
+
+    <script>
+        let allLessons = [];
+
+        async function loadLessons() {
+            try {
+                const [statsRes, lessonsRes] = await Promise.all([
+                    fetch('/api/stats'),
+                    fetch('/api/lessons')
+                ]);
+                const stats = await statsRes.json();
+                allLessons = await lessonsRes.json();
+                document.getElementById('total').textContent = stats.total;
+                document.getElementById('read').textContent = stats.read;
+                document.getElementById('unread').textContent = stats.unread;
+                document.getElementById('trash').textContent = stats.in_recycle_bin;
+
+                renderLessons();
+            } catch (error) {
+                console.error('Error loading stats:', error);
+            }
+        }
+
+        function renderLessons() {
+            const container = document.getElementById('lessonsContainer');
+            const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+
+            let html = '';
+            if (!allLessons || allLessons.length === 0) {
+                html = `
+                    <div class="empty-state">
+                        <h2>📭 No Lessons Yet</h2>
+                        <p>Your daily lessons will appear here once you receive your first email.</p>
+                        <button class="btn" onclick="sendNow()" style="margin-top: 20px;">Send First Lesson</button>
+                    </div>
+                `;
+            } else {
+                const filtered = allLessons.filter(item => {
+                    const name = (item.lesson?.name || '').toLowerCase();
+                    const category = (item.lesson?.category || '').toLowerCase();
+                    return name.includes(searchTerm) || category.includes(searchTerm);
+                });
+
+                if (filtered.length === 0) {
+                    html = '<div class="empty-state"><p>No lessons match your search.</p></div>';
+                } else {
+                    html = '<div class="lessons-grid">';
+                    filtered.forEach(item => {
+                        const status = item.status || {};
+                        const lesson = item.lesson || {};
+                        const isRead = status.read;
+                        const readClass = isRead ? 'read' : 'unread';
+                        const readBadge = isRead ? '<div class="status-badge read">✓ Read</div>' : '<div class="status-badge">Unread</div>';
+
+                        html += `
+                            <div class="lesson-card ${readClass}">
+                                <div class="lesson-header">
+                                    <div class="lesson-category">${lesson.category || 'Medicine'}</div>
+                                    <div class="lesson-title">${lesson.name || 'Lesson'}</div>
+                                    <div class="lesson-date">${new Date(status.sent_at).toLocaleDateString()}</div>
+                                </div>
+                                <div class="lesson-body">
+                                    <div class="lesson-summary">${lesson.wiki_info?.summary?.substring(0, 150) || 'Medical lesson content...'}</div>
+                                    <div class="lesson-status">
+                                        ${readBadge}
+                                    </div>
+                                </div>
+                                <div class="lesson-footer">
+                                    <button class="btn-view" onclick="viewLesson('${status._id}')">View</button>
+                                    <button class="btn-resend" onclick="resendLesson('${status._id}')">Resend</button>
+                                    <button class="btn-delete" onclick="deleteLesson('${status._id}')">Delete</button>
+                                </div>
+                            </div>
+                        `;
+                    });
+                    html += '</div>';
+                }
+            }
+
+            container.innerHTML = html;
+        }
+
+        function viewLesson(statusId) {
+            window.location.href = `/lesson/${statusId}`;
+        }
+
+        async function deleteLesson(statusId) {
+            if (!confirm('Move to recycle bin?')) return;
+            try {
+                await fetch(`/api/delete/${statusId}`, { method: 'POST' });
+                location.reload();
+            } catch (error) {
+                alert('Error: ' + error);
+            }
+        }
+
+        async function resendLesson(statusId) {
+            try {
+                const res = await fetch(`/api/resend/${statusId}`, { method: 'POST' });
+                const data = await res.json();
+                if (data.status === 'resent') {
+                    alert('Email resent successfully!');
+                } else {
+                    alert('Error resending email: ' + (data.message || 'Unknown error'));
+                }
+            } catch (error) {
+                alert('Error: ' + error);
+            }
+        }
+
+        async function markAllRead() {
+            if (!confirm('Mark all lessons as read?')) return;
+            try {
+                await fetch('/api/mark-all-read', { method: 'POST' });
+                location.reload();
+            } catch (error) {
+                alert('Error: ' + error);
+            }
+        }
+
+        async function sendNow() {
+            try {
+                const res = await fetch('/api/send-now', { method: 'POST' });
+                const data = await res.json();
+                if (data.status === 'sent') {
+                    alert('✓ Email sent for: ' + data.topic);
+                    setTimeout(() => location.reload(), 1000);
+                } else if (data.status === 'already_sent') {
+                    alert(data.message);
+                } else {
+                    alert('Error: ' + (data.message || 'Failed to send'));
+                }
+            } catch (error) {
+                alert('Error: ' + error);
+            }
+        }
+
+        document.getElementById('searchInput').addEventListener('input', renderLessons);
+
+        // Load on start
+        loadLessons();
+    </script>
+</body>
+</html>
