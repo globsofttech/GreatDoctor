@@ -33,6 +33,13 @@ Then open `.env` and fill in:
 - **SEND_HOUR / SEND_MINUTE** — what time it fires daily (24h, server's
   local time).
 
+Each daily email also includes the latest available NIBL Sahabhagita Fund
+NAV from the fund's official NAV page. If that page is temporarily
+unavailable, the regular daily email is still sent without the NAV section.
+It also lists open and upcoming IPOs with their opening/closing dates and
+the number of days remaining. If the IPO page is unavailable, the email is
+still sent without the IPO section.
+
 ## 3. Run
 
 ```bash

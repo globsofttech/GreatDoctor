@@ -11,9 +11,10 @@ from datetime import datetime, timedelta
 from apscheduler.schedulers.background import BackgroundScheduler
 from bson.objectid import ObjectId
 from functools import wraps
+from pymongo.errors import ServerSelectionTimeoutError
 
 from topics import TOPICS
-from utils import tracker, youtube, wiki, emailer
+from utils import tracker, youtube, wiki, emailer, nav, ipos
 from models import User, Lesson, UserLessonStatus, EmailLog, Topic
 
 load_dotenv()
@@ -286,7 +287,9 @@ def resend_email(status_id):
             user.get("email"),
             lesson,
             lesson.get("video_info", {}),
-            lesson.get("wiki_info", {})
+            lesson.get("wiki_info", {}),
+            nav.get_latest_nav(),
+            ipos.get_upcoming_ipos(),
         )
         EmailLog.log_email(user_id, status["lesson_id"], user.get("email"), "sent")
         return jsonify({"status": "resent"})
@@ -351,7 +354,10 @@ def run_daily_job(force_user_id=None, target_user_id=None):
             "wiki_info": wiki_info
         }
         lesson_id = Lesson.create(lesson_data)
-    
+
+    nav_info = nav.get_latest_nav()
+    ipo_info = ipos.get_upcoming_ipos()
+
     # Get all active users and send
     user_query = {"is_active": True}
     if target_user_id:
@@ -375,7 +381,7 @@ def run_daily_job(force_user_id=None, target_user_id=None):
             try:
                 emailer.send_email(
                     SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, email,
-                    topic, video_info, wiki_info
+                    topic, video_info, wiki_info, nav_info, ipo_info
                 )
                 EmailLog.log_email(user_id, lesson_id, email, "sent")
                 print(f"[OK] Sent to {email}: {topic['name']}")
@@ -479,6 +485,18 @@ def not_found(e):
 @app.errorhandler(500)
 def server_error(e):
     return render_template("500.html", error=str(e)), 500
+
+
+@app.errorhandler(ServerSelectionTimeoutError)
+def database_unavailable(e):
+    app.logger.error("MongoDB is unavailable: %s", e)
+    return render_template(
+        "500.html",
+        error=(
+            "Database unavailable. Configure MONGO_URI with your MongoDB Atlas "
+            "connection string in .env, then restart the app."
+        ),
+    ), 503
 
 
 # ============ STARTUP ============

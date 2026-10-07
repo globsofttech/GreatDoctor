@@ -13,7 +13,10 @@ load_dotenv()
 MONGO_URI = os.getenv("MONGO_URI")
 DB_NAME = os.getenv("DB_NAME", "medical_portal")
 
-client = MongoClient(MONGO_URI)
+client = MongoClient(
+    MONGO_URI or "mongodb://127.0.0.1:27017",
+    serverSelectionTimeoutMS=5000,
+)
 db = client[DB_NAME]
 
 

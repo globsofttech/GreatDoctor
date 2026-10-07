@@ -89,7 +89,8 @@ Then visit: **http://localhost:5000/register**
 1. Create free account at [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas)
 2. Create free cluster
 3. Get connection string: `mongodb+srv://user:pass@cluster.mongodb.net/medical_portal`
-4. Add to `.env` as `MONGO_URI`
+4. Copy `.env.example` to `.env` and add the connection string as `MONGO_URI`
+5. Replace `USERNAME`, `PASSWORD`, and `CLUSTER` with your Atlas values
 
 ### **Required: Gmail SMTP**
 1. Enable 2-factor authentication on Gmail

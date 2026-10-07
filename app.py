@@ -4,7 +4,7 @@ from dotenv import load_dotenv
 from apscheduler.schedulers.background import BackgroundScheduler
 
 from topics import TOPICS
-from utils import tracker, youtube, wiki, emailer
+from utils import tracker, youtube, wiki, emailer, nav, ipos
 
 load_dotenv()
 
@@ -24,6 +24,8 @@ def run_daily_job():
     topic = tracker.get_next_topic(TOPICS)
     video_info = youtube.get_video(topic["query"], YOUTUBE_API_KEY)
     wiki_info = wiki.get_summary(topic["query"])
+    nav_info = nav.get_latest_nav()
+    ipo_info = ipos.get_upcoming_ipos()
 
     entry = tracker.record_today(topic, video_info, wiki_info)
 
@@ -31,7 +33,7 @@ def run_daily_job():
         try:
             emailer.send_email(
                 SMTP_HOST, SMTP_PORT, SMTP_USER, SMTP_PASS, TO_EMAIL,
-                topic, video_info, wiki_info,
+                topic, video_info, wiki_info, nav_info, ipo_info,
             )
             print(f"[OK] Sent email for: {topic['name']}")
         except Exception as e:
