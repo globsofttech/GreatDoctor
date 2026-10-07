@@ -9,6 +9,15 @@ import requests
 
 
 IPOS_URL = "https://hamroshare.com.np/investment/upcoming-ipos"
+HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/124.0 Safari/537.36"
+    ),
+    "Accept": "text/html,application/xhtml+xml",
+    "Accept-Language": "en-US,en;q=0.9",
+}
 _IPO_SECTION = re.compile(r'\\"label\\":\\"IPO\\".*?(?=\\"label\\":\\"|$)', re.DOTALL)
 _ISSUE = re.compile(
     r'\\"opening_date\\":\\"(?P<opening>[^"]*)\\".*?'
@@ -80,7 +89,7 @@ def _parse_rendered_upcoming(html, today):
 
         header = re.search(
             r"<span[^>]*>\s*([^<]+)\s*</span>.*?"
-            r"<span[^>]*>\s*Forthcoming\s*</span>.*?"
+            r"(?:<span[^>]*>\s*([^<]+)\s*</span>.*?)?"
             r"<div[^>]*>\s*([^<]+)\s*</div>.*?"
             r"<span[^>]*>\s*([^<]+)\s*</span>",
             card,
@@ -88,13 +97,18 @@ def _parse_rendered_upcoming(html, today):
         )
         if not header:
             continue
+        company_code = header.group(1).strip()
+        status = (header.group(2) or "Upcoming").strip()
+        company_name = header.group(3).strip()
+        issue_type = header.group(4).strip()
 
         countdown_date, countdown = _days_remaining(
             opening_date, closing_date, today
         )
         results.append({
-            "company": f"{header.group(1).strip()} - {header.group(2).strip()}",
-            "type": header.group(3).strip(),
+            "company": f"{company_code} - {company_name}",
+            "status": status,
+            "type": issue_type,
             "opening_date": opening_date.isoformat(),
             "closing_date": closing_date.isoformat(),
             "countdown_date": countdown_date.isoformat(),
@@ -149,7 +163,11 @@ def _parse_ipos(html, today=None):
 def get_upcoming_ipos():
     """Return open and future issues, or an empty list if unavailable."""
     try:
-        response = requests.get(IPOS_URL, timeout=10)
+        response = requests.get(IPOS_URL, headers=HEADERS, timeout=15)
+        print(
+            f"[INFO] IPO source response: status={response.status_code}, "
+            f"length={len(response.text)}"
+        )
         response.raise_for_status()
     except requests.RequestException as exc:
         print(f"[WARNING] Could not fetch upcoming IPOs: {exc}")
