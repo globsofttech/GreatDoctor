@@ -25,11 +25,12 @@ def build_html(topic, video_info, wiki_info, nav_info=None, ipos=None):
     ipo_html = (
         """
         <div style="margin-top:20px;padding:15px;background:#f4f0ff;border-left:4px solid #7654c7;">
-          <h3 style="margin-top:0;">Upcoming IPOs</h3>
+          <h3 style="margin-top:0;">Upcoming Issues</h3>
           <ul style="padding-left:20px;line-height:1.6;">
         """
         + "".join(
-            f'<li><b>{escape(str(ipo["company"]))}</b> - '
+            f'<li><b>{escape(str(ipo["company"]))}</b> '
+            f'({escape(str(ipo.get("type", "IPO")))}) - '
             f'{escape(str(ipo["countdown"]))} '
             f'(opens {escape(str(ipo["opening_date"]))}, '
             f'closes {escape(str(ipo["closing_date"]))})</li>'
@@ -41,7 +42,13 @@ def build_html(topic, video_info, wiki_info, nav_info=None, ipos=None):
         </div>
         """
         if ipos
-        else ""
+        else """
+        <div style="margin-top:20px;padding:15px;background:#f8f8f8;border-left:4px solid #999;">
+          <h3 style="margin-top:0;">Upcoming Issues</h3>
+          <p style="margin-bottom:0;">No open or upcoming IPOs with published dates were found today.</p>
+          <p style="margin-bottom:0;"><a href="https://hamroshare.com.np/investment/upcoming-ipos">Check IPO details</a></p>
+        </div>
+        """
     )
 
     return f"""
