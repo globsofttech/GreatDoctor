@@ -5,7 +5,7 @@ Features: Auto-daily emails, User login, Read tracking, Recycle bin, 150-day rep
 import os
 import json
 from flask import Flask, render_template, request, session, redirect, jsonify, make_response
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import check_password_hash
 from dotenv import load_dotenv
 from datetime import datetime, timedelta
 from apscheduler.schedulers.background import BackgroundScheduler
@@ -15,7 +15,8 @@ from pymongo.errors import ServerSelectionTimeoutError
 
 from topics import TOPICS
 from utils import tracker, youtube, wiki, emailer, nav, ipos
-from models import User, Lesson, UserLessonStatus, EmailLog, Topic
+from models import User, Lesson, UserLessonStatus, EmailLog, Topic, PriceMonitorState
+from utils import price_monitor
 
 load_dotenv()
 
@@ -31,6 +32,7 @@ TO_EMAIL = os.getenv("TO_EMAIL", SMTP_USER)
 YOUTUBE_API_KEY = os.getenv("YOUTUBE_API_KEY", "")
 SEND_HOUR = int(os.getenv("SEND_HOUR", "7"))
 SEND_MINUTE = int(os.getenv("SEND_MINUTE", "0"))
+PRICE_ALERT_THRESHOLD = float(os.getenv("PRICE_ALERT_THRESHOLD", "1500"))
 
 # ============ MIDDLEWARE ============
 def login_required(f):
@@ -56,29 +58,6 @@ def no_cache(f):
 
 
 # ============ AUTHENTICATION ============
-@app.route("/register", methods=["GET", "POST"])
-def register():
-    if request.method == "POST":
-        email = request.form.get("email")
-        password = request.form.get("password")
-        name = request.form.get("name")
-        
-        if not email or not password or not name:
-            return render_template("register.html", error="All fields required")
-        
-        if User.find_by_email(email):
-            return render_template("register.html", error="Email already registered")
-        
-        password_hash = generate_password_hash(password)
-        user_id = User.create(email, password_hash, name)
-        
-        session["user_id"] = str(user_id)
-        session["email"] = email
-        return redirect("/dashboard")
-    
-    return render_template("register.html")
-
-
 @app.route("/login", methods=["GET", "POST"])
 def login():
     if request.method == "POST":
@@ -409,6 +388,59 @@ def run_scheduled_job():
             run_daily_job(target_user_id=str(user["_id"]))
 
 
+def run_price_monitor():
+    """Alert once when a tracked T-shirt crosses below the configured price."""
+    try:
+        products = price_monitor.fetch_products()
+    except Exception:
+        app.logger.exception("Price monitor failed to fetch products")
+        return
+
+    newly_discounted = []
+    unchanged_or_above = []
+    for product in products:
+        previous = PriceMonitorState.get(product["id"])
+        if product["price"] < PRICE_ALERT_THRESHOLD and not (
+            previous and previous.get("below_threshold")
+        ):
+            newly_discounted.append(product)
+        else:
+            unchanged_or_above.append(product)
+
+    if not newly_discounted:
+        for product in unchanged_or_above:
+            PriceMonitorState.save(
+                product, product["price"] < PRICE_ALERT_THRESHOLD
+            )
+        return
+
+    if not (SMTP_USER and SMTP_PASS and TO_EMAIL):
+        app.logger.error("Price alert skipped: SMTP is not configured")
+        for product in unchanged_or_above:
+            PriceMonitorState.save(
+                product, product["price"] < PRICE_ALERT_THRESHOLD
+            )
+        return
+
+    try:
+        emailer.send_price_alert(
+            SMTP_HOST,
+            SMTP_PORT,
+            SMTP_USER,
+            SMTP_PASS,
+            TO_EMAIL,
+            newly_discounted,
+            PRICE_ALERT_THRESHOLD,
+        )
+    except Exception:
+        app.logger.exception("Price alert email failed")
+        return
+
+    for product in products:
+        PriceMonitorState.save(product, product["price"] < PRICE_ALERT_THRESHOLD)
+    app.logger.info("Sent %d T-shirt price alerts", len(newly_discounted))
+
+
 @app.route("/api/send-now", methods=["POST"])
 @login_required
 def send_now():
@@ -433,8 +465,22 @@ def cron_trigger():
     if not expected_secret or supplied_secret != expected_secret:
         return jsonify({"status": "error", "message": "Unauthorized"}), 401
 
-    run_scheduled_job()
-    return jsonify({"status": "ok"})
+    errors = []
+    try:
+        run_scheduled_job()
+    except Exception:
+        app.logger.exception("Daily scheduled job failed")
+        errors.append("daily_mail")
+
+    try:
+        run_price_monitor()
+    except Exception:
+        app.logger.exception("T-shirt price monitor failed")
+        errors.append("price_monitor")
+
+    if errors:
+        return jsonify({"status": "error", "failed_jobs": errors}), 500
+    return jsonify({"status": "ok", "jobs": ["daily_mail", "price_monitor"]})
 
 
 def start_scheduler():

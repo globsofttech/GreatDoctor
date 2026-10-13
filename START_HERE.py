@@ -11,7 +11,6 @@ FILES_CREATED = {
     
     "🎨 FRONTEND TEMPLATES": {
         "templates/login.html": "Login page with beautiful gradient design",
-        "templates/register.html": "Registration page for new users",
         "templates/dashboard.html": "Main portal - view all lessons, search, stats",
         "templates/lesson_detail.html": "Full lesson view with medical information",
         "templates/recycle_bin.html": "View and restore deleted lessons",
@@ -111,8 +110,8 @@ SEND_MINUTE=0     # For 7 AM India Time: HOUR=1, MINUTE=30
 1. Run setup script → install dependencies
 2. Create .env file → add credentials
 3. Start app → python app_enhanced.py
-4. Visit → http://localhost:5000/register
-5. Create account → register with your email
+4. Visit → http://localhost:5000/login
+5. Log in with your existing account
 6. Send first lesson → click "Send Now" button
 7. Check email → verify SMTP is working
 8. Read in portal → view lesson in browser
@@ -181,7 +180,7 @@ Day 1:
   • Run setup.sh or setup.bat
   • Edit .env with your credentials
   • Start app (python app_enhanced.py)
-  • Register account at http://localhost:5000/register
+  • Log in at http://localhost:5000/login with your existing account
   • Click "Send Now" to test
 
 Day 2:

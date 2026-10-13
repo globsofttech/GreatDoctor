@@ -40,7 +40,6 @@ architecture = """
 │  │                         app_enhanced.py                              │  │
 │  │                                                                      │  │
 │  │  Routes:                  Services:                                  │  │
-│  │  ├─ /register            ├─ User authentication                      │  │
 │  │  ├─ /login               ├─ Email sending (SMTP)                     │  │
 │  │  ├─ /dashboard           ├─ YouTube API integration                  │  │
 │  │  ├─ /lesson/<id>         ├─ Wikipedia scraping                       │  │
@@ -294,7 +293,7 @@ EXAMPLE 1: User Registration
 ─────────────────────────────
 
 1. Browser sends form:
-   POST /register
+   POST /login
    Content-Type: application/x-www-form-urlencoded
    
    name=Dr.%20Student&email=student@example.com&password=secure123

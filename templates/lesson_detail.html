@@ -192,8 +192,33 @@
             line-height: 1.8;
         }
         @media (max-width: 768px) {
+            .navbar {
+                padding: 12px 16px;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .navbar h1 {
+                font-size: 18px;
+            }
+            .navbar > div {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 8px;
+            }
+            .navbar a {
+                margin-left: 0;
+                font-size: 13px;
+            }
+            .container {
+                padding: 20px 12px;
+            }
+            .header, .content {
+                padding: 20px 16px;
+            }
             .lesson-title {
                 font-size: 24px;
+                overflow-wrap: anywhere;
             }
             .actions {
                 flex-direction: column;

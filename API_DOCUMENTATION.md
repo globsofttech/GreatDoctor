@@ -7,27 +7,6 @@ All endpoints with request/response examples
 # AUTHENTICATION ENDPOINTS
 # ============================================================
 
-## POST /register
-"""
-Create new user account
-
-Request:
-  POST /register
-  Content-Type: application/x-www-form-urlencoded
-  
-  Parameters:
-  - name: string (user's full name)
-  - email: string (unique email address)
-  - password: string (secure password)
-
-Response (Success):
-  Redirect: /dashboard
-  Sets: session["user_id"], session["email"]
-
-Response (Error):
-  400: "Email already registered" | "All fields required"
-"""
-
 ## POST /login
 """
 Authenticate user with email and password
@@ -367,28 +346,6 @@ Can also be manually triggered via:
 # DATABASE OPERATIONS
 # ============================================================
 
-## User.create(email, password_hash, name)
-"""
-Create new user in database
-
-Parameters:
-  - email: str
-  - password_hash: str (hashed with werkzeug)
-  - name: str
-
-Returns:
-  ObjectId (inserted user ID)
-
-Fields created:
-  - _id (auto)
-  - email
-  - password (hashed)
-  - name
-  - created_at
-  - email_preference (defaults)
-  - is_active: true
-"""
-
 ## User.find_by_email(email)
 """
 Find user by email address
@@ -525,17 +482,16 @@ Common error responses:
 # ============================================================
 
 """
-WORKFLOW 1: New User Registration & First Lesson
-1. User visits /register
-2. POST /register with (name, email, password)
-3. User created in MongoDB
-4. Redirect to /dashboard
-5. Dashboard shows empty state with "Send First Lesson" button
-6. User clicks button → POST /api/send-now
-7. Lesson generated and emailed
-8. Email contains portal link
-9. User reads lesson in portal
-10. Status marked as read
+WORKFLOW 1: Existing User Login & First Lesson
+1. User visits /login
+2. User signs in with the existing account
+3. Redirect to /dashboard
+4. Dashboard shows empty state with "Send First Lesson" button
+5. User clicks button → POST /api/send-now
+6. Lesson generated and emailed
+7. Email contains portal link
+8. User reads lesson in portal
+9. Status marked as read
 
 WORKFLOW 2: Daily Automated Email
 1. Time reaches SEND_HOUR:SEND_MINUTE
@@ -583,23 +539,20 @@ WORKFLOW 4: Recycle Bin Recovery
 """
 Test with curl or Postman:
 
-1. Test user registration:
-   curl -X POST http://localhost:5000/register \\
-     -d "name=Test&email=test@example.com&password=pass123"
+1. Test login with the existing account:
 
-2. Test login:
+2. Test email sending:
    curl -X POST http://localhost:5000/login \\
      -d "email=test@example.com&password=pass123" \\
      -c cookies.txt
 
-3. Test email sending:
+3. Test stats API:
    curl -X POST http://localhost:5000/api/test-email
 
-4. Test stats API:
+4. Test send now:
    curl -X GET http://localhost:5000/api/stats \\
      -b cookies.txt
 
-5. Test send now:
    curl -X POST http://localhost:5000/api/send-now \\
      -b cookies.txt
 """

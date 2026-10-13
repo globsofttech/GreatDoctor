@@ -79,7 +79,7 @@ cp .env.example_enhanced .env
 python app_enhanced.py
 ```
 
-Then visit: **http://localhost:5000/register**
+Then visit: **http://localhost:5000/login** and sign in with your existing account.
 
 ---
 
@@ -97,6 +97,15 @@ Then visit: **http://localhost:5000/register**
 2. Go to [myaccount.google.com/apppasswords](https://myaccount.google.com/apppasswords)
 3. Generate app password for "Mail" + "Windows Computer"
 4. Copy 16-char password → `.env` as `SMTP_PASS`
+
+### **T-shirt price alerts**
+The same protected `/api/cron` endpoint used for daily disease mailing also
+checks Brocade's T-shirts and Hubanepal's men's T-shirts. It sends a
+consolidated email when a product drops below `PRICE_ALERT_THRESHOLD`
+(NPR 1,500 by default). The price check runs whenever your existing cron
+service calls `/api/cron`, so a cron-job.org schedule of every minute checks
+prices every minute. The daily disease-mail job and the price check run
+independently, so a failure in one does not prevent the other from running.
 
 ### **Optional: YouTube API**
 1. Create project at [console.cloud.google.com](https://console.cloud.google.com)
@@ -346,7 +355,7 @@ Daily Lesson - [Date]
 | Login fails | Clear browser cookies, check MongoDB connection |
 | Scheduler not working on Vercel | Use external cron service (EasyCron) |
 | MongoDB connection error | Check IP whitelist, verify URI format |
-| Lessons not showing | Check if admin user registered first |
+| Lessons not showing | Check if your existing account is active and MongoDB is connected |
 
 ---
 
@@ -445,7 +454,6 @@ disease-reminder/
 │   ├── setup.bat (Windows setup script)
 │   ├── templates/
 │   │   ├── login.html ⭐
-│   │   ├── register.html ⭐
 │   │   ├── dashboard.html ⭐
 │   │   ├── lesson_detail.html ⭐
 │   │   ├── recycle_bin.html ⭐
@@ -482,4 +490,4 @@ Open source - feel free to modify and use!
 
 Start receiving your daily medical lessons today and build comprehensive medical knowledge month by month.
 
-**Time to register: http://localhost:5000/register** ⏰
+**Sign in to continue: http://localhost:5000/login** ⏰

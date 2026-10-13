@@ -5,3 +5,7 @@ __pycache__/
 *.pyc
 data/history.json
 data/today.json
+
+# Local storefront snapshots used for parser validation
+brocadetee.html
+huwamen.html

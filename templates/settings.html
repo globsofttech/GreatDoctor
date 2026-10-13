@@ -111,6 +111,63 @@
         .btn:hover {
             background: #5568d3;
         }
+        .btn-secondary {
+            background: #ddd;
+            color: #333;
+        }
+        .btn-danger {
+            background: #ff6b6b;
+            color: white;
+        }
+        .topic-row {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+        .topic-details {
+            flex: 1;
+            min-width: 0;
+            overflow-wrap: anywhere;
+        }
+        @media (max-width: 768px) {
+            .navbar {
+                padding: 12px 16px;
+                align-items: flex-start;
+                gap: 12px;
+            }
+            .navbar h1 {
+                font-size: 18px;
+            }
+            .navbar > div {
+                display: flex;
+                flex-direction: column;
+                align-items: flex-end;
+                gap: 8px;
+            }
+            .navbar a {
+                margin-left: 0;
+                font-size: 13px;
+            }
+            .container {
+                padding: 20px 12px;
+            }
+            .settings-card {
+                padding: 20px 16px;
+            }
+            .topic-row {
+                align-items: stretch;
+                flex-wrap: wrap;
+            }
+            .topic-details {
+                flex-basis: 100%;
+            }
+            .topic-row .btn {
+                flex: 1;
+                margin-top: 4px;
+            }
+        }
     </style>
 </head>
 <body>
@@ -189,8 +246,8 @@
                 </form>
                 <div style="margin-top: 20px; max-height: 420px; overflow-y: auto;">
                     {% for topic in topics %}
-                        <div style="display: flex; gap: 8px; align-items: center; padding: 8px 0; border-bottom: 1px solid #eee;">
-                            <span style="flex: 1;"><strong>{{ topic.name }}</strong><br><small>{{ topic.category }} · {{ topic.query }}</small></span>
+                        <div class="topic-row">
+                            <span class="topic-details"><strong>{{ topic.name }}</strong><br><small>{{ topic.category }} · {{ topic.query }}</small></span>
                             <button type="button" class="btn btn-secondary" onclick='editTopic({{ topic|tojson }})'>Edit</button>
                             <button type="button" class="btn btn-danger" onclick="removeTopic('{{ topic.id }}')">Delete</button>
                         </div>

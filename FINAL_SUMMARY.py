@@ -20,7 +20,7 @@ print("""
 
 ✅ COMPLETE FLASK APPLICATION
    - Full-featured medical knowledge delivery system
-   - User authentication (register/login/logout)
+   - User authentication (login/logout)
    - Personal learning portal
    - Automated email scheduler
    - RESTful API for all operations
@@ -111,7 +111,7 @@ print("""
    
    ├─ Run: python app_enhanced.py
    ├─ Wait for: "[INFO] Scheduler started"
-   └─ Visit: http://localhost:5000/register
+   └─ Visit: http://localhost:5000/login
 
 5. TEST LOCALLY (10 minutes)
    
@@ -175,7 +175,6 @@ disease-reminder/disease-reminder/
 ├── 🎨 USER INTERFACE TEMPLATES
 │   └── templates/
 │       ├── login.html ⭐ Login page
-│       ├── register.html ⭐ Registration
 │       ├── dashboard.html ⭐ Main portal
 │       ├── lesson_detail.html ⭐ Full lesson view
 │       ├── recycle_bin.html ⭐ Deleted items
@@ -219,7 +218,7 @@ EMAIL CONTENT 📧
 └─ Button to view in portal
 
 LEARNING PORTAL 📚
-├─ User registration & login
+├─ Existing-user login
 ├─ Dashboard with all lessons
 ├─ Read/Unread tracking
 ├─ Search by disease name or category

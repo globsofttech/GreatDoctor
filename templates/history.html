@@ -2,12 +2,21 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>History</title>
     <style>
+        * { box-sizing: border-box; }
         body { font-family: Arial, sans-serif; max-width: 650px; margin: 40px auto; padding: 0 20px; color: #222; }
         nav a { margin-right: 16px; font-size: 14px; }
         .row { border-bottom: 1px solid #eee; padding: 12px 0; }
         .category { color: #888; font-size: 13px; }
+        @media (max-width: 480px) {
+            body { margin: 20px auto; padding: 0 14px; }
+            nav { display: flex; flex-wrap: wrap; gap: 10px 16px; }
+            nav a { margin-right: 0; }
+            h1 { font-size: 26px; overflow-wrap: anywhere; }
+            .category { display: block; margin-top: 4px; }
+        }
     </style>
 </head>
 <body>

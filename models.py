@@ -24,25 +24,6 @@ class User:
     collection = db["users"]
     
     @staticmethod
-    def create(email, password_hash, name):
-        """Create new user"""
-        user = {
-            "email": email,
-            "password": password_hash,
-            "name": name,
-            "created_at": datetime.now(),
-            "email_preference": {
-                "send_daily": True,
-                "auto_repeat_enabled": True,
-                "send_hour": 7,
-                "send_minute": 0
-            },
-            "is_active": True
-        }
-        result = User.collection.insert_one(user)
-        return result.inserted_id
-    
-    @staticmethod
     def find_by_email(email):
         """Find user by email"""
         return User.collection.find_one({"email": email})
@@ -58,6 +39,31 @@ class User:
         User.collection.update_one(
             {"_id": ObjectId(user_id)},
             {"$set": {"email_preference": settings}}
+        )
+
+
+class PriceMonitorState:
+    collection = db["price_monitor_state"]
+
+    @staticmethod
+    def get(product_id):
+        return PriceMonitorState.collection.find_one({"_id": product_id})
+
+    @staticmethod
+    def save(product, below_threshold):
+        PriceMonitorState.collection.update_one(
+            {"_id": product["id"]},
+            {
+                "$set": {
+                    "name": product["name"],
+                    "price": product["price"],
+                    "url": product["url"],
+                    "source": product["source"],
+                    "below_threshold": below_threshold,
+                    "updated_at": datetime.now(),
+                }
+            },
+            upsert=True,
         )
 
 

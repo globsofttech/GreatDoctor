@@ -40,8 +40,8 @@ PHASE 1: LOCAL TESTING (Your Computer)
 
 □ Testing Application
   □ python app_enhanced.py starts without errors
-  □ http://localhost:5000/register accessible
-  □ Can create new user account
+  □ http://localhost:5000/login accessible
+  □ Can log in with the existing account
   □ Can login with credentials
   □ Can access /dashboard
   □ Click "Send Now" button works
@@ -106,8 +106,7 @@ PHASE 2: VERCEL DEPLOYMENT (Free Cloud)
 
 □ Test Deployed App
   □ Visit deployment URL
-  □ Can register new account
-  □ Can login
+  □ Can login with the existing account
   □ POST /api/test-email works (verify SMTP)
   □ Can send lesson manually
   □ Email received from cloud instance
@@ -170,7 +169,6 @@ PHASE 4: USER ACCEPTANCE
 
 □ User Testing
   □ Share deployment URL with test user
-  □ User can register account
   □ User can receive daily emails
   □ User can view in portal
   □ User can mark as read

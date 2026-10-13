@@ -90,3 +90,51 @@ def send_email(
         server.starttls()
         server.login(smtp_user, smtp_pass)
         server.sendmail(smtp_user, to_email, msg.as_string())
+
+
+def send_price_alert(
+    smtp_host,
+    smtp_port,
+    smtp_user,
+    smtp_pass,
+    to_email,
+    products,
+    threshold,
+):
+    msg = MIMEMultipart("alternative")
+    msg["Subject"] = f"Price alert: T-shirts below NPR {threshold:,.0f}"
+    msg["From"] = smtp_user
+    msg["To"] = to_email
+
+    rows = "".join(
+        f"""
+        <tr>
+          <td style="padding:8px;border-bottom:1px solid #eee;">{escape(product["name"])}</td>
+          <td style="padding:8px;border-bottom:1px solid #eee;">NPR {product["price"]:,.2f}</td>
+          <td style="padding:8px;border-bottom:1px solid #eee;">
+            <a href="{escape(product["url"])}">View product</a>
+          </td>
+        </tr>
+        """
+        for product in products
+    )
+    html = f"""
+    <html>
+      <body style="font-family:Arial,sans-serif;max-width:700px;margin:auto;">
+        <h2>👕 T-shirt price alert</h2>
+        <p>These products are now below NPR {threshold:,.0f}:</p>
+        <table style="border-collapse:collapse;width:100%;">
+          <tr><th style="text-align:left;padding:8px;">Product</th>
+              <th style="text-align:left;padding:8px;">Price</th>
+              <th style="text-align:left;padding:8px;">Link</th></tr>
+          {rows}
+        </table>
+      </body>
+    </html>
+    """
+    msg.attach(MIMEText(html, "html"))
+
+    with smtplib.SMTP(smtp_host, smtp_port) as server:
+        server.starttls()
+        server.login(smtp_user, smtp_pass)
+        server.sendmail(smtp_user, to_email, msg.as_string())

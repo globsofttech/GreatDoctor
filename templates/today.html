@@ -2,15 +2,23 @@
 <html>
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Today's Disease</title>
     <style>
+        * { box-sizing: border-box; }
         body { font-family: Arial, sans-serif; max-width: 650px; margin: 40px auto; padding: 0 20px; color: #222; }
-        h1 { font-size: 22px; }
+        h1 { font-size: 22px; overflow-wrap: anywhere; }
         .category { color: #888; margin-top: -10px; }
         img { max-width: 100%; border-radius: 10px; margin: 16px 0; }
         a { color: #1a56db; }
         .card { border: 1px solid #eee; border-radius: 12px; padding: 20px; box-shadow: 0 1px 4px rgba(0,0,0,0.06); }
         nav a { margin-right: 16px; font-size: 14px; }
+        @media (max-width: 480px) {
+            body { margin: 20px auto; padding: 0 14px; }
+            nav { display: flex; flex-wrap: wrap; gap: 10px 16px; }
+            nav a { margin-right: 0; }
+            .card { padding: 16px; }
+        }
     </style>
 </head>
 <body>

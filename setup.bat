@@ -45,7 +45,7 @@ echo.
 echo Next steps:
 echo 1. Edit .env with your credentials
 echo 2. Run: python app_enhanced.py
-echo 3. Visit: http://localhost:5000/register
+echo 3. Visit: http://localhost:5000/login and use your existing account
 echo.
 
 pause
