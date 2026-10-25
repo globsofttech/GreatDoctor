@@ -60,7 +60,7 @@ def build_html(topic, video_info, wiki_info, nav_info=None, ipos=None):
         {nav_html}
         {ipo_html}
         <hr>
-        <p style="font-size:12px;color:#aaa;">Sent by your daily disease-a-day app.</p>
+        <p style="font-size:12px;color:#aaa;">Sent by your daily <a href="https://greatdoctor-plum.vercel.app">disease-a-day</a> app.</p>
       </body>
     </html>
     """
